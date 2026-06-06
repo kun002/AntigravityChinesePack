@@ -2,3 +2,5 @@
 node_modules/
 *.vsix
 .vscode/
+__pycache__/
+新建文件夹 (3)/

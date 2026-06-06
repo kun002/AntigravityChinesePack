@@ -1,4 +1,22 @@
 .vscode
 .DS_Store
+.git
+# 开发 / 构建脚本（不需要打入 vsix）
 patch_zh.py
+clean_injects.py
+generate_dict.py
+search_strings.py
+test_poc.py
+refactor.js
+build_v2.js
+build_v3_hybrid.js
+# 空的/未使用的翻译文件
+translations/main.i18n.json
+
+# 旧版遗留 / PoC 文件
+poc_observer.js
+v2_observer.js
+# 备份文件
+*.bak
+# 打包产物本身
 *.vsix

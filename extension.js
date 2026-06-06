@@ -10,12 +10,21 @@ const crypto = require('crypto');
 // 路径配置
 // ═══════════════════════════════════════════════════════════════
 function getAppBase() {
-    // Antigravity.app 的 Resources/app 路径
+    // macOS Candidates
     const candidates = [
         '/Applications/Antigravity.app/Contents/Resources/app',
         path.join(process.env.HOME || '', 'Applications/Antigravity.app/Contents/Resources/app'),
     ];
     for (const c of candidates) {
+        if (fs.existsSync(c)) return c;
+    }
+    // Windows Candidates (用户级安装 / 系统级安装 / x86 系统级安装)
+    const winPaths = [
+        process.env.LOCALAPPDATA && path.join(process.env.LOCALAPPDATA, 'Programs', 'Antigravity IDE', 'resources', 'app'),
+        process.env.ProgramFiles && path.join(process.env.ProgramFiles, 'Antigravity IDE', 'resources', 'app'),
+        process.env['ProgramFiles(x86)'] && path.join(process.env['ProgramFiles(x86)'], 'Antigravity IDE', 'resources', 'app'),
+    ].filter(Boolean);
+    for (const c of winPaths) {
         if (fs.existsSync(c)) return c;
     }
     // Fallback: 从 vscode 的 appRoot 推导
@@ -193,6 +202,213 @@ function getSettingsReplacements() {
         ['," result",a===1?"":"s"', '," 个结果"'],
         ['," result",t.resources.length===1?"":"s"', '," 个结果"'],
         ['," result",a.length===1?"":"s"," "', '," 个结果 "'],
+        // === v1.107.0 Settings updates ===
+        ['{value:e0.TURBO,label:"Always Proceed",description:"Agent never asks for review. This maximizes the autonomy of the Agent, but also has the highest risk of the Agent operating over unsafe or injected Artifact content.",disabledInSecureMode:!0}',
+            '{value:e0.TURBO,label:"始终继续",description:"Agent 从不请求审查。这最大化了 Agent 的自主性，但也具有 Agent 操作不安全或注入的 Artifact 内容的最高风险。",disabledInSecureMode:!0}'],
+        ['{value:e0.ALWAYS,label:"Always Ask",description:"Agent always asks for review.",disabledInSecureMode:!1}',
+            '{value:e0.ALWAYS,label:"始终询问",description:"Agent 始终请求审查。",disabledInSecureMode:!1}'],
+        ['children:["Settings - ",e]', 'children:["设置 - ",e]'],
+        ['"aria-label":"Add context"', '"aria-label":"添加上下文"'],
+        ['tooltipText:"Edit Model"', 'tooltipText:"编辑模型"'],
+        // === Remaining settings translations ===
+        ['children:["Select one of the ",t?"two":"three"," options. Agent settings and permissions can be further customized below."',
+            'children:["从",t?"两个":"三个","个选项中选择一个。Agent 设置和权限可在下方进一步自定义。"'],
+        ['children:"Agent security mode"', 'children:"Agent 安全模式"'],
+        ['children:"Full access"', 'children:"完全访问"'],
+        ['children:"Agents have full access to your machine and external resources."', 'children:"Agent 可以完全访问您的计算机和外部资源。"'],
+        ['children:"Sandboxed"', 'children:"沙盒化"'],
+        ['children:"Agents run in a secure sandbox that restricts access to external resources outside of your trusted folders."', 'children:"Agent 运行在安全的沙盒中，限制访问信任文件夹以外的外部资源。"'],
+        ['children:"Strict"', 'children:"严格"'],
+        ['children:"Terminal commands always require review and the agent cannot access files outside of its given workspaces."', 'children:"终端命令始终需要审查，且 Agent 无法访问指定工作区以外的文件。"'],
+        ['require your approval before running.\\n\\nNote: A change to this setting will only apply to new messages sent to Agent. In-progress responses will use the previous setting value.',
+            '在运行前需要您的批准。\\n\\n注意：对此设置的更改仅适用于发送给 Agent 的新消息。正在进行的响应将使用以前的设置值。'],
+        ['label:"Enable Shell Integration"', 'label:"启用 Shell 集成"'],
+        ['description:"When enabled, Agent will use IDE\'s shell integration to detect and report terminal command execution."',
+            'description:"启用后，Agent 将使用 IDE 的 Shell 集成来检测并报告终端命令的执行。"'],
+        ['children:"File Access"', 'children:"文件访问"'],
+        ['description:"Allows the agent to access files outside of your current workspace."',
+            'description:"允许 Agent 访问当前工作区以外的文件。"'],
+        ['children:"Planning"', 'children:"规划"'],
+        ['description:"Specifies Agent\'s behavior when asking for review on artifacts, which are documents it creates to enable a richer conversation experience."',
+            'description:"指定 Agent 在请求审查 Artifact（即为了提供更丰富的对话体验而创建的文档）时的行为。"'],
+        ['children:"Automation"', 'children:"自动化"'],
+        ['children:"History"', 'children:"历史记录"'],
+        ['children:"General"', 'children:"常规"'],
+        ['label:"Explain and Fix in Current Conversation"', 'label:"在当前对话中解释和修复"'],
+        ['description:"When enabled, \'Explain and Fix\' actions will continue in the current conversation instead of starting a new one."',
+            'description:"启用后，“解释并修复”操作将在当前对话中继续，而不是开始新对话。"'],
+        ['children:"Advanced"', 'children:"高级"'],
+        ['children:"Advanced File Access"', 'children:"高级文件访问"'],
+        ['label:"Read Files",description:"Paths the agent can read."', 'label:"读取文件",description:"Agent 可以读取的路径。"'],
+        ['label:"Read Files",description:"Paths the agent can read inside this workspace."', 'label:"读取文件",description:"Agent 在此工作区中可以读取的路径。"'],
+        ['label:"Write Files",description:"Paths the agent can modify."', 'label:"写入文件",description:"Agent 可以修改的路径。"'],
+        ['label:"Write Files",description:"Paths the agent can modify inside this workspace."', 'label:"写入文件",description:"Agent 在此工作区中可以修改的路径。"'],
+        ['children:"Advanced Command Access"', 'children:"高级命令访问"'],
+        ['label:"Terminal Commands",description:"Terminal commands the agent can execute."', 'label:"终端命令",description:"Agent 可以执行的终端命令。"'],
+        ['label:"Terminal Commands",description:"Terminal commands the agent can execute in this workspace."', 'label:"终端命令",description:"Agent 在此工作区中可以执行的终端命令。"'],
+        ['label:"Commands Outside Sandbox",description:"Allow/deny agent command execution outside the sandbox."',
+            'label:"沙盒外的命令",description:"允许/拒绝 Agent 在沙盒外执行命令。"'],
+        ['label:"Commands Outside Sandbox",description:"Commands the agent can run outside the sandbox."',
+            'label:"沙盒外的命令",description:"Agent 可以在沙盒外运行的命令。"'],
+        ['label:"Commands Outside Sandbox",description:"Commands the agent can run outside the sandbox in this workspace."',
+            'label:"沙盒外的命令",description:"Agent 在此工作区的沙盒外可以运行的命令。"'],
+        ['label:"MCP Tools",description:"Configure external tools via Model Context Protocol."',
+            'label:"MCP 工具",description:"通过 Model Context Protocol 配置外部工具。"'],
+        ['label:"MCP Tools",description:"External tools the agent can call via Model Context Protocol."',
+            'label:"MCP 工具",description:"Agent 可通过 Model Context Protocol 调用的外部工具。"'],
+        ['children:"Advanced Web Access"', 'children:"高级网络访问"'],
+        ['label:"Read URLs",description:"Allow/deny agent read access to specific URLs or domains."',
+            'label:"读取 URL",description:"允许/拒绝 Agent 对特定 URL 或域名的读取访问。"'],
+        ['label:"Read URLs",description:"URLs the agent can read or open in the browser."',
+            'label:"读取 URL",description:"Agent 可以在浏览器中读取或打开的 URL。"'],
+        ['label:"Read URLs",description:"URLs the agent can read or open in this workspace."',
+            'label:"读取 URL",description:"Agent 在此工作区中可以读取或打开的 URL。"'],
+        ['label:"Execute URLs",description:"URLs the agent can actuate on using the browser."',
+            'label:"执行 URL",description:"Agent 可以使用浏览器操作 the URL。"'],
+        ['label:"Execute URLs",description:"Allow/deny agent browser actuation access to specific URLs."',
+            'label:"执行 URL",description:"允许/拒绝 Agent 对特定 URL 的浏览器操作访问。"'],
+        ['label:"Execute URLs",description:"URLs the agent can actuate on in this workspace."',
+            'label:"执行 URL",description:"Agent 在此工作区中可以操作 the URL。"'],
+        ['label:t="Advanced Settings"', 'label:t="高级设置"'],
+        ['label:"Enable Demo Mode (Beta)"', 'label:"启用演示模式 (Beta)"'],
+        ['description:\'When enabled, your UI will be slightly modified to ensure more consistent demos. This is only recommended for demo purposes. In most cases, you can run "Antigravity: Start Demo Mode" and "Antigravity: Stop Demo Mode" to control this switch and update your ~/.gemini/antigravity data directory.\'',
+            'description:\'启用后，您的 UI 将被稍微修改以确保演示的一致性。仅建议用于演示目的。在大多数情况下，您可以运行 "Antigravity: Start Demo Mode" and "Antigravity: Stop Demo Mode" 来控制此开关并更新您的 ~/.gemini/antigravity 数据目录。\''],
+        ['description:`When toggled on, ${r.product.nameShort} collects usage data to help Google enhance performance and features.`',
+            'description:`开启后，${r.product.nameShort} 将收集使用数据，以帮助 Google 提升性能和功能。`'],
+        ['label:"Marketing Emails",description:`Receive product updates, tips, and promotions from Google ${r.product.nameShort} via email.`',
+            'label:"营销邮件",description:`通过电子邮件接收来自 Google ${r.product.nameShort} 的产品更新、提示和促销信息。`'],
+        ['children:["By using this app, you agree to its",', 'children:["使用此应用即表示您同意其",'],
+        ['className:"text-primary hover:underline",children:"Terms of Service"', 'className:"text-primary hover:underline",children:"服务条款"'],
+        ['className:"text-lg font-medium mb-4",children:"Terms of Service & Data Use"', 'className:"text-lg font-medium mb-4",children:"服务条款与数据使用"'],
+        ['description:p(jt,{children:["Configure the browser subagent. It requires",', 'description:p(jt,{children:["配置浏览器子 Agent。它需要安装",'],
+        ['`Refreshes in ${n} day${n>1?"s":""}, ${a} hour${a>1?"s":""}`', '`将在 ${n} 天 ${a} 小时后刷新`'],
+        ['`Refreshes in ${a} hour${a>1?"s":""}, ${i} minute${i>1?"s":""}`', '`将在 ${a} 小时 ${i} 分钟后刷新`'],
+        ['`Refreshes in ${i} minute${i>1?"s":""}`', '`将在 ${i} 分钟后刷新`'],
+        ['description:"View your available model quota. Quota refreshes periodically based on your plan."',
+            'description:"查看您可用的模型配额。配额会根据您的方案定期刷新。"'],
+        ['"% of the customization budget is available."', '"% 的定制预算当前可用。"'],
+        ['children:V?"Hide breakdown":`Show ${I.length} breakdown${I.length===1?"":"s"}`',
+            'children:V?"隐藏明细":`显示 ${I.length} 项明细`'],
+        ['"Plugin: "', '"插件: "'],
+        ['children:["Plugins are packaged collections of skills and MCPs to help the Agent"," ",a?`in ${a} `:"","work with Google developer products. You can always change your choices in Settings."]',
+            'children:["插件是技能和 MCP 的打包集合，用于帮助 Agent"," ",a?`在 ${a} `:"","中协同谷歌开发产品工作。您随时可以在设置中更改您的选择。"]'],
+        ['children:["Plugins are packaged collections of skills and MCPs to help the Agent in ",e," work with Google developer products. You can always change your choices in Settings."]',
+            'children:["插件是技能和 MCP 的打包集合，用于帮助 Agent 在 ",e," 中协同谷歌开发产品工作。您随时可以在设置中更改您的选择。"]'],
+        ['children:"No MCP Servers"', 'children:"没有 MCP 服务器"'],
+        ['children:"You currently don\'t have any MCP Servers installed. Add an MCP server above or add a custom one via the MCP Config."',
+            'children:"您当前未安装任何 MCP 服务器。请在上方添加 MCP 服务器，或通过 MCP 配置添加自定义服务器。"'],
+        ['label:"Account",description:"Manage your plan, credentials, and general preferences."',
+            'label:"账户",description:"管理您的方案、凭据和常规偏好设置。"'],
+        ['label:"Appearance",description:"Configure the agent\'s visual theme and display preferences."',
+            'label:"外观",description:"配置 Agent 的视觉主题和显示偏好设置。"'],
+        ['label:"Notifications",description:"Manage your notification preferences."',
+            'label:"通知",description:"管理您的通知偏好设置。"'],
+        ['label:"Models",description:"Configure AI models and view your quota."',
+            'label:"模型",description:"配置 AI 模型并查看您的配额。"'],
+        ['label:"Customizations",description:"Configure default behaviors, skills, and MCP servers."',
+            'label:"自定义",description:"配置默认行为、技能和 MCP 服务器。"'],
+        ['label:"Browser Settings",description:"Configure the browser subagent. It requires Google Chrome to be installed."',
+            'label:"浏览器设置",description:"配置浏览器子 Agent。它需要安装 Google Chrome。"'],
+        ['label:"Editor Settings",description:"Configure editor-specific behaviors and shortcuts."',
+            'label:"编辑器设置",description:"配置编辑器特定的行为和快捷键。"'],
+        ['children:"Account & Plan"', 'children:"账户与方案"'],
+        ['label:"Email",description:a?"Peter Pan":n.email', 'label:"电子邮件",description:a?"Peter Pan":n.email'],
+        ['children:"Theme"', 'children:"主题"'],
+        ['children:"Chat Settings"', 'children:"聊天设置"'],
+        ['label:"Verbose agent chat",description:"Display and preserve intermediate thinking steps"',
+            'label:"详细 Agent 聊天",description:"显示并保留中间思考步骤"'],
+        ['label:"Notification Settings",description:"To modify notification settings, open your operating system\'s system preferences."',
+            'label:"通知设置",description:"要修改通知设置，请打开您操作系统的系统偏好设置。"'],
+        ['label:"Model Quota"', 'label:"模型配额"'],
+        ['children:"Actuation Permissions"', 'children:"执行操作权限"'],
+        ['label:"Browser Actuation Rules",description:"Configure allowed and denied URLs for browser actuation."',
+            'label:"浏览器执行规则",description:"配置允许和拒绝的浏览器执行 URL。"'],
+        ['children:"Marketplace"', 'children:"市场"'],
+        ['description:"Changes the base URL on each extension page. You must restart Antigravity IDE to use the new marketplace after changing this value."',
+            'description:"更改每个扩展页面的基础 URL。更改此值后，您必须重启 Antigravity IDE 才能使用新的市场。"'],
+        ['description:"Changes the base URL for marketplace search results. You must restart Antigravity IDE to use the new marketplace after changing this value."',
+            'description:"更改市场搜索结果的基础 URL。更改此值后，您必须重启 Antigravity IDE 才能使用新的市场。"'],
+        ['children:"Selection Actions"', 'children:"选中操作"'],
+        ['label:"Editor Settings",description:"To modify editor settings, open Settings within the editor window."',
+            'label:"编辑器设置",description:"要修改编辑器设置，请在编辑器窗口中打开设置。"'],
+
+        // --- Sidebar ---
+        ['children:"Account"', 'children:"账户"'],
+        ['children:"Permissions"', 'children:"权限"'],
+        ['children:"Appearance"', 'children:"外观"'],
+        ['children:"Notifications"', 'children:"通知"'],
+        ['children:"Models"', 'children:"模型"'],
+        ['children:"Customizations"', 'children:"自定义"'],
+        ['children:"Browser"', 'children:"浏览器"'],
+        ['children:"Tab"', 'children:"Tab"'],
+        ['children:"Editor"', 'children:"编辑器"'],
+        ['children:"Workspaces"', 'children:"工作区"'],
+        ['children:"Shortcuts"', 'children:"快捷键"'],
+
+        // --- Terminal Settings ---
+        ['children:"Controls whether terminal commands require your approval before running."', 'children:"控制终端命令在运行前是否需要您的批准。"'],
+        ['description:"Controls whether terminal commands require your approval before running."', 'description:"控制终端命令在运行前是否需要您的批准。"'],
+        ['"Note: A change to this setting will only apply to new messages sent to Agent. In-progress responses will use the previous setting value."', '"注意：对此设置的更改仅适用于发送给 Agent 的新消息。正在进行的响应将使用以前的设置值。"'],
+        
+        // --- Appearance Settings ---
+        ['children:"Configure the agent\'s visual theme and display preferences."', 'children:"配置 Agent 的视觉主题和显示偏好设置。"'],
+        ['description:"Configure the agent\'s visual theme and display preferences."', 'description:"配置 Agent 的视觉主题和显示偏好设置。"'],
+        
+        // --- Notifications Settings ---
+        ['children:"Manage your notification preferences."', 'children:"管理您的通知偏好设置。"'],
+        ['description:"Manage your notification preferences."', 'description:"管理您的通知偏好设置。"'],
+        ['children:"Notification Settings"', 'children:"通知设置"'],
+        ['children:"To modify notification settings, open your operating system\'s system preferences."', 'children:"要修改通知设置，请打开您操作系统的系统偏好设置。"'],
+        ['children:"Open System Preferences"', 'children:"打开系统偏好设置"'],
+        
+        // --- Models Settings ---
+        ['children:"Configure AI models and view your quota."', 'children:"配置 AI 模型并查看您的配额。"'],
+        ['description:"Configure AI models and view your quota."', 'description:"配置 AI 模型并查看您的配额。"'],
+        ['children:"Model Credits"', 'children:"模型积分"'],
+        ['children:"Enable AI Credit Overages"', 'children:"启用 AI 积分超额使用"'],
+        ['children:"When toggled on, Antigravity IDE will use your AI credits to fulfill model requests once you\'re out of model quota. Antigravity IDE will always use your model quota first before using AI credits."', 'children:"开启后，当您的模型配额用尽时，Antigravity IDE 将使用您的 AI 积分来完成模型请求。Antigravity IDE 将始终优先使用您的模型配额，然后再使用 AI 积分。"'],
+        ['children:"Available AI Credits: "', 'children:"可用 AI 积分: "'],
+        ['"Available AI Credits: "', '"可用 AI 积分: "'],
+        ['children:"See Activity"', 'children:"查看活动"'],
+        ['children:"Get More AI Credits"', 'children:"获取更多 AI 积分"'],
+        ['children:"Model Quota"', 'children:"模型配额"'],
+        ['children:"Refresh"', 'children:"刷新"'],
+        
+        // --- General Settings Dropdowns ---
+        ['children:"Request Review"', 'children:"请求审查"'],
+        ['children:"Agent Decides"', 'children:"Agent 决定"'],
+        ['children:"Always Proceed"', 'children:"始终继续"'],
+        
+        // --- Raw Strings Fallback ---
+        ['"Account"', '"账户"'],
+        ['"Permissions"', '"权限"'],
+        ['"Appearance"', '"外观"'],
+        ['"Notifications"', '"通知"'],
+        ['"Models"', '"模型"'],
+        ['"Customizations"', '"自定义"'],
+        ['"Browser"', '"浏览器"'],
+        ['"Tab"', '"Tab"'],
+        ['"Editor"', '"编辑器"'],
+        ['"Workspaces"', '"工作区"'],
+        ['"Shortcuts"', '"快捷键"'],
+        ['"Controls whether terminal commands require your approval before running."', '"控制终端命令在运行前是否需要您的批准。"'],
+        ['"Configure the agent\'s visual theme and display preferences."', '"配置 Agent 的视觉主题和显示偏好设置。"'],
+        ['"Manage your notification preferences."', '"管理您的通知偏好设置。"'],
+        ['"Notification Settings"', '"通知设置"'],
+        ['"To modify notification settings, open your operating system\'s system preferences."', '"要修改通知设置，请打开您操作系统的系统偏好设置。"'],
+        ['"Open System Preferences"', '"打开系统偏好设置"'],
+        ['"Configure AI models and view your quota."', '"配置 AI 模型并查看您的配额。"'],
+        ['"Model Credits"', '"模型积分"'],
+        ['"Enable AI Credit Overages"', '"启用 AI 积分超额使用"'],
+        ['"When toggled on, Antigravity IDE will use your AI credits to fulfill model requests once you\'re out of model quota. Antigravity IDE will always use your model quota first before using AI credits."', '"开启后，当您的模型配额用尽时，Antigravity IDE 将使用您的 AI 积分来完成模型请求。Antigravity IDE 将始终优先使用您的模型配额，然后再使用 AI 积分。"'],
+        ['"Available AI Credits: "', '"可用 AI 积分: "'],
+        ['"See Activity"', '"查看活动"'],
+        ['"Get More AI Credits"', '"获取更多 AI 积分"'],
+        ['"Model Quota"', '"模型配额"'],
+        ['"Refresh"', '"刷新"'],
+        ['"Request Review"', '"请求审查"'],
+        ['"Agent Decides"', '"Agent 决定"'],
+        ['"Always Proceed"', '"始终继续"'],
     ];
 }
 
@@ -929,7 +1145,7 @@ function getChatReplacements() {
         ['"Unnamed resource"', '"\u672A\u547D\u540D\u8D44\u6E90"'],  // 未命名资源
         ['"Unsupported browser target"', '"\u4E0D\u652F\u6301\u7684\u6D4F\u89C8\u5668\u76EE\u6807"'],  // 不支持的浏览器目标
         ['"untitled"', '"\u672A\u547D\u540D"'],  // 未命名
-        ['"Upload to Agent"', '"\u4E0A\u4F20\u5230\u4EE3\u7406"'],  // 上传到代理
+        ['"Upload to Agent"', '"\u4E0A\u4F20\u5230 Agent"'],  // 上传到 Agent
         ['"Upload"', '"\u4E0A\u4F20"'],  // 上传
         ['"User Implicit Trajectories"', '"\u7528\u6237\u9690\u5F0F\u8F68\u8FF9"'],  // 用户隐式轨迹
         ['"User Implicit"', '"\u7528\u6237\u9690\u5F0F"'],  // 用户隐式
@@ -1028,11 +1244,11 @@ function getChatReplacements() {
         ['"Unexpected object: "', '"\u610F\u5916\u7684\u5BF9\u8C61: "'],  // 意外的对象: 
         ['"unable to serialize "', '"\u65E0\u6CD5\u5E8F\u5217\u5316 "'],  // 无法序列化 
         ['"This undo action will not make any code changes."', '"\u6B64\u64A4\u9500\u64CD\u4F5C\u4E0D\u4F1A\u8FDB\u884C\u4EFB\u4F55\u4EE3\u7801\u66F4\u6539\u3002"'],  // 此撤销操作不会进行任何代码更改。
-        ['"Messages can be sent while the agent is still working and your message will be queued and taken into consideration at the next available break in reasoning."', '"\u60A8\u53EF\u4EE5\u5728\u4EE3\u7406\u4ECD\u5728\u5DE5\u4F5C\u65F6\u53D1\u9001\u6D88\u606F\uFF0C\u60A8\u7684\u6D88\u606F\u5C06\u88AB\u6392\u961F\uFF0C\u5E76\u5728\u4E0B\u4E00\u4E2A\u53EF\u7528\u7684\u63A8\u7406\u95F4\u6B47\u65F6\u88AB\u8003\u8651\u3002"'],  // 您可以在代理仍在工作时发送消息，您的消息将被排队，并在下一个可用的推理间歇时被考虑。
-        ['"This tool runs code that can access IDE extension APIs and potentially change the functionality of your IDE the same way that an IDE extension or plugin can."', '"\u6B64\u5DE5\u5177\u8FD0\u884C\u7684\u4EE3\u7801\u53EF\u4EE5\u8BBF\u95EE IDE \u6269\u5C55 API\uFF0C\u5E76\u53EF\u80FD\u4EE5\u4E0E IDE \u6269\u5C55\u6216\u63D2\u4EF6\u76F8\u540C\u7684\u65B9\u5F0F\u66F4\u6539 IDE \u7684\u529F\u80FD\u3002"'],  // 此工具运行的代码可以访问 IDE 扩展 API，并可能以与 IDE 扩展或插件相同的方式更改 IDE 的功能。
+        ['"Messages can be sent while the agent is still working and your message will be queued and taken into consideration at the next available break in reasoning."', '"\u60A8\u53EF\u4EE5\u5728 Agent \u4ECD\u5728\u5DE5\u4F5C\u65F6\u53D1\u9001\u6D88\u606F\uFF0C\u60A8\u7684\u6D88\u606F\u5C06\u88AB\u6392\u961F\uFF0C\u5E76\u5728\u4E0B\u4E00\u4E2A\u53EF\u7528\u7684\u63A8\u7406\u95F4\u6B47\u65F6\u88AB\u8003\u8651\u3002"'],  // 您可以在 Agent 仍在工作时发送消息，您的消息将被排队，并在下一个可用的推理间歇时被考虑。
+        ['"This tool runs code that can access IDE extension APIs and potentially change the functionality of your IDE the same way that an IDE extension or plugin can."', '"\u6B64\u5DE5\u5177\u8FD0\u884C\u7684\u4EE3\u7801\u53EF\u4EE5\u8BBF\u95EE IDE \u6269\u5C55 API\uFF0C\u5E76\u53EF\u80FD\u4EE5\u4E0E IDE \u6269\u5C55\u6216\u63D2\u4EF6\u76F8\u540C\u7684\u65B9\u5F0F\u66F4\u6539 IDE \u7684\u529F\u80FD\u3002"'],  // 此工具运行的代码可以访问 IDE 扩展 API，并可能以与 IDE 扩展或插件相同的方式更改 IDE 的功能。（保留，用户可见）
         ['"Too many requests, please try again in a bit!"', '"\u8BF7\u6C42\u8FC7\u591A\uFF0C\u8BF7\u7A0D\u540E\u91CD\u8BD5\uFF01"'],  // 请求过多，请稍后重试！
         ['"This error is likely temporary. You can prompt the model to try again after some time."', '"\u6B64\u9519\u8BEF\u53EF\u80FD\u662F\u6682\u65F6\u7684\u3002\u60A8\u53EF\u4EE5\u7A0D\u540E\u63D0\u793A\u6A21\u578B\u91CD\u8BD5\u3002"'],  // 此错误可能是暂时的。您可以稍后提示模型重试。
-        ['"Get notified when the agent needs your attention or completes a task."', '"\u5F53\u4EE3\u7406\u9700\u8981\u60A8\u6CE8\u610F\u6216\u5B8C\u6210\u4EFB\u52A1\u65F6\u83B7\u5F97\u901A\u77E5\u3002"'],  // 当代理需要您注意或完成任务时获得通知。
+        ['"Get notified when the agent needs your attention or completes a task."', '"\u5F53 Agent \u9700\u8981\u60A8\u6CE8\u610F\u6216\u5B8C\u6210\u4EFB\u52A1\u65F6\u83B7\u5F97\u901A\u77E5\u3002"'],  // 当 Agent 需要您注意或完成任务时获得通知。
         ['"This model is currently experiencing some issues."', '"\u6B64\u6A21\u578B\u5F53\u524D\u9047\u5230\u4E00\u4E9B\u95EE\u9898\u3002"'],  // 此模型当前遇到一些问题。
         ['"Failed to load "', '"\u52A0\u8F7D\u5931\u8D25 "'],  // 加载失败 
         ['"Did you make sure to report this error on Slack?"', '"\u60A8\u786E\u5B9A\u5DF2\u5728 Slack \u4E0A\u62A5\u544A\u6B64\u9519\u8BEF\u4E86\u5417\uFF1F"'],  // 您确定已在 Slack 上报告此错误了吗？
@@ -1170,6 +1386,91 @@ function getWorkbenchReplacements() {
         ['," result",s===1?"":"s"', '," 个结果"'],
         ['," result",i.resources.length===1?"":"s"', '," 个结果"'],
         ['," result",s.length===1?"":"s"," "', '," 个结果 "'],
+        // === v1.107.0 Chat updates ===
+        ['children:"Open Diff"', 'children:"打开差异"'],
+        ['label:"Allow Once"', 'label:"允许一次"'],
+        ['label:"Deny"', 'label:"拒绝"'],
+        ['children:"Additional Options"', 'children:"其他选项"'],
+        ['label:"Try Again"', 'label:"再试一次"'],
+        ['title:"Add Context"', 'title:"添加上下文"'],
+        // === v1.107.0 Workbench updates ===
+        ['t.ON="On",t.OFF="Off"', 't.ON="开",t.OFF="关"'],
+        ['children:"Terminal execution policy"', 'children:"终端执行策略"'],
+        ['children:"Review policy"', 'children:"审查策略"'],
+        ['children:"JavaScript execution policy"', 'children:"JavaScript 执行策略"'],
+        ['children:"Always Proceed"', 'children:"始终继续"'],
+        ['children:"Request Review"', 'children:"请求审查"'],
+        ['children:"Always Ask"', 'children:"始终询问"'],
+        ['children:"Disabled"', 'children:"已禁用"'],
+        ['{value:Vz.TURBO,label:"Always Proceed",description:"Agent never asks for review. This maximizes the autonomy of the Agent, but also has the highest risk of the Agent operating over unsafe or injected Artifact content.",disabledInSecureMode:!0}',
+            '{value:Vz.TURBO,label:"始终继续",description:"Agent 从不请求审查。这最大化了 Agent 的自主性，但也具有 Agent 操作不安全或注入的 Artifact 内容的最高风险。",disabledInSecureMode:!0}'],
+        ['{value:Vz.ALWAYS,label:"Always Ask",description:"Agent always asks for review.",disabledInSecureMode:!1}',
+            '{value:Vz.ALWAYS,label:"始终询问",description:"Agent 始终请求审查。",disabledInSecureMode:!1}'],
+        ['{label:"Always Proceed",value:$9.TURBO,description:"Trust the agent to do tasks end-to-end",isDefaultWhenAvailable:!0}',
+            '{label:"始终继续",value:$9.TURBO,description:"信任 Agent 端到端地执行任务",isDefaultWhenAvailable:!0}'],
+        ['{label:"Agent Decides",value:$9.AUTO,description:"Assist the agent to complete tasks"}',
+            '{label:"Agent 决定",value:$9.AUTO,description:"辅助 Agent 完成任务"}'],
+        ['{label:"Request Review",value:$9.ALWAYS,description:"Collaborate with the agent to complete tasks"}',
+            '{label:"请求审查",value:$9.ALWAYS,description:"与 Agent 协作完成任务"}'],
+        ['{label:"Always Proceed",value:$U.EAGER,description:"Always auto-execute commands unless they are in your deny list. This also allows Agent to auto-execute Browser controls."}',
+            '{label:"始终继续",value:$U.EAGER,description:"始终自动执行命令，除非它们在您的拒绝列表中。这也允许 Agent 自动执行浏览器控制。"}'],
+        ['{label:"Request Review",value:$U.OFF,description:"Never auto-execute commands unless they are in your allow list.",isDefaultWhenAvailable:!0}',
+            '{label:"请求审查",value:$U.OFF,description:"从不自动执行命令，除非它们在您的允许列表中。",isDefaultWhenAvailable:!0}'],
+        ['{label:"Slow",value:Fwe.SLOW}', '{label:"慢速",value:Fwe.SLOW}'],
+        ['{label:"Fast",value:Fwe.FAST,isDefaultWhenAvailable:!0}', '{label:"快速",value:Fwe.FAST,isDefaultWhenAvailable:!0}'],
+        // === Remaining workbench/feedback/shortcuts translations ===
+        ['label:"Open Conversation Picker"', 'label:"打开对话选择器"'],
+        ['label:"Open File Search"', 'label:"打开文件搜索"'],
+        ['label:"Focus Input"', 'label:"聚焦输入框"'],
+        ['label:"New Conversation"', 'label:"新建对话"'],
+        ['label:"Open Workspace Selector"', 'label:"打开工作区选择器"'],
+        ['label:"Go Back"', 'label:"后退"'],
+        ['label:"Go Forward"', 'label:"前进"'],
+        ['label:"File Picker"', 'label:"文件选择器"'],
+        ['label:"Toggle Editor"', 'label:"切换编辑器"'],
+        ['label:"Select Previous Conversation"', 'label:"选择上一个对话"'],
+        ['label:"Select Next Conversation"', 'label:"选择下一个对话"'],
+        ['label:"Toggle Model Selector"', 'label:"切换模型选择器"'],
+        ['label:"Start Voice Recording"', 'label:"开始语音录制"'],
+        ['label:"Stop Voice Recording"', 'label:"停止语音录制"'],
+        ['label:"Find in Pane"', 'label:"在窗格中查找"'],
+        ['label:"Toggle Sidebar"', 'label:"切换侧边栏"'],
+        ['label:"Toggle Auxiliary Pane"', 'label:"切换辅助窗格"'],
+        ['label:"Toggle Terminal"', 'label:"切换终端"'],
+        ['label:"Open Settings"', 'label:"打开设置"'],
+        ['label:"Zoom In"', 'label:"放大"'],
+        ['label:"Zoom Out"', 'label:"缩小"'],
+        ['label:"Reset Zoom"', 'label:"重置缩放"'],
+        ['children:"Recommended"', 'children:"推荐"'],
+        ['children:"Navigation"', 'children:"导航"'],
+        ['children:"Conversation"', 'children:"对话"'],
+        ['children:"Layout Controls"', 'children:"布局控制"'],
+        ['children:"Shortcuts"', 'children:"快捷键"'],
+        ['description:"Keyboard shortcuts for quick navigation and control."', 'description:"用于快速导航和控制的键盘快捷键。"'],
+        ['children:"Feedback Type"', 'children:"反馈类型"'],
+        ['"bug-report":"Bug Report"', '"bug-report":"Bug 报告"'],
+        ['"feature-request":"Feature Request"', '"feature-request":"功能请求"'],
+        ['"auth-and-billing":"Auth and Billing"', '"auth-and-billing":"认证与计费"'],
+        ['"general-feedback":"General Feedback"', '"general-feedback":"常规反馈"'],
+        ['children:"Please describe the issue in detail. The more actionable your feedback, the quicker our team can address your request. Some helpful information includes:"',
+            'children:"请详细描述该问题。您的反馈越具可操作性，我们的团队就能越快处理您的请求。一些有帮助的信息包括："'],
+        ['children:"Steps to reproduce the issue"', 'children:"重现问题的步骤"'],
+        ['children:"Expected behavior"', 'children:"预期行为"'],
+        ['children:"Actual behavior"', 'children:"实际行为"'],
+        ['children:"Any error messages"', 'children:"任何错误消息"'],
+        ['children:"Any relevant information"', 'children:"任何相关信息"'],
+        ['"bug-report":"Describe the bug you encountered..."', '"bug-report":"请描述您遇到的 Bug..."'],
+        ['children:"Steps to Reproduce"', 'children:"重现步骤"'],
+        ['placeholder:"Please list the steps to reproduce the issue"', 'placeholder:"请列出重现该问题的步骤"'],
+        ['children:"Attach a screenshot (optional)"', 'children:"附加屏幕截图 (可选)"'],
+        ['label:"Attach Antigravity server logs"', 'label:"附加 Antigravity 服务器日志"'],
+        ['label:"Send feedback as "+e.email', 'label:"发送反馈，身份为："+e.email'],
+        ['children:"We recommend attaching logs. Attaching logs will help the Antigravity team act on and prioritize your feedback."',
+            'children:"我们建议附加日志。附加日志将帮助 Antigravity 团队针对您的反馈进行处理并排定优先级。"'],
+        ['title:"Model quota reached"', 'title:"已达到模型配额限制"'],
+        ["` Your plan's baseline quota will refresh on ${o}.`", "` 您方案的基准配额将在 ${o} 刷新。`"],
+        ['label:d||"Upgrade"', 'label:d||"升级"'],
+        ['children:n.userTier?.upgradeButtonText||"Upgrade"', 'children:n.userTier?.upgradeButtonText||"升级"'],
     ];
 }
 
@@ -1210,10 +1511,17 @@ function patchFile(filepath, replacements, name) {
         fs.writeFileSync(backup, content, 'utf-8');
     }
 
+    // 去重：以英文原文为 key，保留最后一条，防止链式误替换
+    const seen = new Map();
+    for (const pair of replacements) {
+        seen.set(pair[0], pair[1]);
+    }
+    const dedupedReplacements = [...seen.entries()];
+
     let count = 0;
     const failed = [];
 
-    for (const [oldStr, newStr] of replacements) {
+    for (const [oldStr, newStr] of dedupedReplacements) {
         if (content.includes(oldStr)) {
             content = content.split(oldStr).join(newStr);
             count++;
@@ -1230,7 +1538,7 @@ function patchFile(filepath, replacements, name) {
     content = PATCH_MARKER + '\n' + content;
     fs.writeFileSync(filepath, content, 'utf-8');
 
-    return { name, success: count, total: replacements.length, failed };
+    return { name, success: count, total: dedupedReplacements.length, failed };
 }
 
 function revertFile(filepath) {
@@ -1285,16 +1593,18 @@ const BLOCKED_UPDATE_URL = 'https://localhost.invalid/no-update';
 
 function isAutoUpdateBlocked(base) {
     const productJsonPath = path.join(base, 'product.json');
-    const backup = productJsonPath + '.bak';
     if (!fs.existsSync(productJsonPath)) return false;
     try {
         const product = JSON.parse(fs.readFileSync(productJsonPath, 'utf-8'));
-        // 如果 updateUrl 不存在或为空，且备份中有原始 updateUrl，则说明已屏蔽
-        if (!product.updateUrl && fs.existsSync(backup)) {
+        // blockAutoUpdate() 通过删除 updateUrl 字段来屏蔽更新
+        // 因此只要 updateUrl 不存在即视为已屏蔽（依赖备份文件存在做判断）
+        if (!product.updateUrl) {
+            const backup = productJsonPath + '.bak';
+            if (!fs.existsSync(backup)) return false;
             const original = JSON.parse(fs.readFileSync(backup, 'utf-8'));
-            return !!original.updateUrl;
+            return !!original.updateUrl; // 原始有 updateUrl 才说明是被我们删掉的
         }
-        return product.updateUrl === BLOCKED_UPDATE_URL;
+        return false;
     } catch {
         return false;
     }
@@ -1358,15 +1668,21 @@ function applyAllPatches(silent) {
     const targets = getTargets(base);
     const results = [];
 
-    // Check if all files have current patch version
-    const allCurrent = Object.values(targets).every(f => isPatchCurrent(f));
+    // Check which targets are active/exist
+    const activeTargets = [targets.settings, targets.workbench];
+    if (fs.existsSync(targets.chat)) {
+        activeTargets.push(targets.chat);
+    }
+
+    // Check if all active files have current patch version
+    const allCurrent = activeTargets.every(f => isPatchCurrent(f));
     if (allCurrent) {
         if (!silent) vscode.window.showInformationMessage('汉化补丁已是最新状态');
         return true;
     }
 
     // Revert files that have old patches before re-applying
-    for (const filepath of Object.values(targets)) {
+    for (const filepath of activeTargets) {
         const ver = getPatchVersion(filepath);
         if (ver && ver !== PATCH_VERSION) {
             revertFile(filepath);
@@ -1375,7 +1691,11 @@ function applyAllPatches(silent) {
 
     // Apply patches
     results.push(patchFile(targets.settings, getSettingsReplacements(), 'Settings'));
-    results.push(patchFile(targets.chat, getChatReplacements(), 'Chat'));
+    if (fs.existsSync(targets.chat)) {
+        results.push(patchFile(targets.chat, getChatReplacements(), 'Chat'));
+    } else {
+        results.push(patchFile(targets.workbench, getChatReplacements(), 'Chat in Workbench'));
+    }
     results.push(patchFile(targets.workbench, getWorkbenchReplacements(), 'Workbench'));
 
     // Update checksums
@@ -1408,9 +1728,13 @@ function revertAllPatches() {
     }
 
     const targets = getTargets(base);
-    let reverted = 0;
+    const activeTargets = [targets.settings, targets.workbench];
+    if (fs.existsSync(targets.chat)) {
+        activeTargets.push(targets.chat);
+    }
 
-    for (const filepath of Object.values(targets)) {
+    let reverted = 0;
+    for (const filepath of activeTargets) {
         if (revertFile(filepath)) reverted++;
     }
 
