@@ -1,0 +1,458 @@
+﻿Accept
+Accept all
+Access
+Actionable
+Actual behavior
+Add Context
+Add Folder
+Add Model
+Add Scheduled Task
+Add them to allow future interactions
+Additional Options
+Agent
+Agent Action DOM Diffs:
+Agent Script Command Configuration
+AI may make mistakes. Double-check all generated code.
+All tasks run as Flash.
+Alt text:
+Always Ask
+Always Proceed
+An error ID that helps the team investigate the error.
+An error was thrown.
+An unknown error occurred
+Antigravity would like to use the browser.
+Any error messages
+Any error messages seen when trying to log in
+Any relevant information
+Approve
+Arguments Schema:
+Artifact Comments
+Artifact Name
+Attach the trajectory ID to the feedback form
+Auto-run Unsupported
+Back to parent agent
+Back to Scheduled Tasks
+Bad response
+Best of
+Best of N mode is not available
+Blocked, needs input
+Browser Mode:
+Browser Tool Set Mode:
+Browser Tools:
+Build with Google
+Built-In
+Bytes
+Cache:
+Cancel
+Cancel step
+Cancel task
+Cannot send message to subagent.
+Chat Model Metadata
+Checking Roadwarrior Installation...
+Choose setup flow
+Clear NUX state
+Cleared Count
+Click Feedback:
+Click here to learn more
+Close
+Close (Escape)
+Close Agent View
+Close Folder
+Cloudtop Host
+Command
+Command Center
+Command Line
+Comment
+Comments
+Configure
+Configure Branches
+Configure Roadwarrior
+Configure Your Editor
+Configure your editor settings below.
+Configure your keybindings.
+Confirm Undo
+Confirmation required to execute this step
+Connect to an existing conversation
+Connect to Cloudtop
+Continue with different account
+Conversation
+Conversation History
+Copied
+Copy Config Path
+Copy Path
+Copy the trajectory ID
+Copy Workspace Name
+Count
+Crash details:
+Create
+Create a project in the sidebar first
+Create New Project
+Created:
+Custom
+Custom models are only supported on Linux machines.
+Custom Reminder:
+Custom URI
+Customizations
+Daily
+Debug Mode
+Debug Sidebar
+Decline
+Default
+Default Branch
+Delete
+Delete Conversation
+Delete pending message
+Delete Project
+Delete Task
+Denied Sites
+Deny
+Description:
+Details
+Dev
+Developer Menu
+Disabled
+Dismiss
+Display Options
+Document Answers
+Drop to add to Agent
+Dynamic Wait Tool:
+Edit rule
+Edit workflow
+Edit your SSH configuration
+Encountered and error while running the sidecar.
+Enter Agent ID
+Enter Google Cloud Project Details
+Environment
+Ephemeral Options:
+Error
+Error Details:
+Error loading Browser recording
+Error rendering playback
+Events
+Execute Javascript policy
+Execution Command
+Expand
+Expected behavior
+Experimental
+Extensions
+Failed to authenticate
+Failed to enable server, click to see details.
+Failed to load conversation
+Failed to load image
+Failed to move changes
+Failed to read file content
+FAQ
+Features
+Feedback
+Fetched network request for page.
+Fetched network requests for page.
+File Comments
+File Diff Comments
+File not found
+Files to edit:
+Filter
+Finalizing transcription...
+Focus Editor
+For turn
+Found references to
+Full Metadata
+Full output written to
+Get Logs
+Global
+Go Back
+Go Forward
+Goal
+Good response
+Google Chrome
+Google Cloud Project ID
+Google Drive Access
+Google Privacy Policy
+Group By
+Having trouble? Let us know
+Hide 0s
+Hide Editor
+History
+Hourly
+How this feature would help you and other users
+Image Answers
+Image Diff Not Supported
+Image rendering blocked (strict mode enabled)
+Image URL:
+Images
+Input
+Input:
+Install
+Installed
+JavaScript execution policy
+JavaScript Result
+Keybindings
+Knowledge feature is not available.
+Knowledge Generation
+Language Server Crashed
+Last Updated
+Launch
+Launching the browser...
+Learn more
+Learn more.
+License:
+List resources: 
+Loading Browser recording...
+Loading conversation...
+Loading events...
+Loading logs...
+Loading MCP servers
+Loading models...
+Loading Notebook View...
+Loading plugins...
+Loading skills...
+Loading summary...
+Loading...
+Location
+Manage MCP Servers
+Manually set Agent ID
+Match case (Aa)
+Match whole word (ab)
+Max Context Characters (optional):
+Max Tokens
+MCP Error
+MCP Servers Disabled
+MCP Store
+Merge Strategy:
+Metadata:
+Metric
+Mixins
+Model
+Model Label
+Model URL
+Models Tab
+Modified
+Modified files:
+Multi-conversation view is not available
+Multi-select
+Name
+Name can only contain letters, spaces, and hyphens.
+Needs Attention
+New
+New Conversation
+New Fig Workspace
+New Project
+New Scheduled Task
+New Workspace
+Next
+Next match (Enter)
+No artifacts generated.
+No background tasks
+No browser pages open
+No build files are updated.
+No changes to review
+No chat model metadata available for this generator
+No chat model metadata available in latest generator metadata
+No content available for this resource
+No conversations yet
+No events recorded.
+No file changes.
+No files or folders found
+No generator metadata available
+No internet. Agent features may not work.
+No items found
+No Javascript Result Output
+No log outputs for this task
+No matching results
+No message prompts available
+No models available
+No plugins available.
+No Project
+No projects found
+No resources available
+No results found
+No skills loaded.
+No subagents
+No trajectories available
+No workspaces yet
+Not Found
+Not scheduled
+Once you are authenticated, reload your window.
+Open
+Open allowlist
+Open Diff
+Open Editor
+Open extracted DOM in editor
+Open in Cider
+Open Page in Background:
+Open System Browser
+Open Trajectory Dashboard
+Open URL
+Opt-out
+Or for gMac:
+Output
+Output:
+Page contents
+Past Conversations
+Pending messages
+Pinned Conversations
+Playback available
+Please wait while we check if roadwarrior is installed.
+Preview
+Preview unavailable
+Previous
+Previous match (Shift+Enter)
+Pricing is based on public API pricing
+Proceed
+Proceed Anyways
+Project
+Projects
+Prompt
+Python Coming Soon
+Python Script
+Quick Start
+Radius:
+Randomly select one of the responses as the winner.
+Read resource: 
+Read URL content?
+Read URL rejected
+Recent actions
+Recommended
+Reconnecting to remote authority.
+Refresh
+Refresh rules
+Refresh skills
+Refresh trajectory list
+Refresh workflows
+Refresh your credentials to gain access to Google services.
+Reject
+Reject all
+Reload
+Reload IDE
+Reload Window
+Reload your window
+Rename
+Rendered Step:
+Rendering playback
+Report Issue
+Request Review
+Reset
+Restart
+Restart Task
+Restore
+Retry
+Review
+Review Changes
+Review policy
+Rules
+Rules help guide the behavior of Agent.
+Run
+Run in your terminal to install (glinux):
+Save
+Scanning skills config file...
+Schedule
+Scheduled Tasks
+Security Notice & Data Use
+See all
+See Terms
+Select a trajectory
+Select an option...
+Select Environment
+Select folder(s)
+Select from known
+Select Model
+Select Model:
+Select one of the options below.
+Select project
+Select text in the artifact to add a comment
+Send Feedback
+Sent Message
+Server failed to start
+Set
+Set Browser Config
+Setup
+Sherlog Links
+Show 0s
+Show more
+Sidecar feature is not available.
+Sidecar view does not exist.
+Sign in with a different account
+Skills
+Skills are instructions that extend what Agent can do.
+Skip
+Skipped
+Some non-image binary content was truncated.
+Something went wrong
+Something went wrong!
+Sort Conversations
+Source:
+Sources
+Start fresh or import settings from another IDE
+Start Screen Recording
+Step JSON:
+Step Type
+Step:
+Steps to reproduce the issue
+Subagent Context Mode:
+Subagent Reminder Mode:
+Submit
+Subtitles
+Suggested Actions
+Task Logs
+Task not found
+Terminal execution policy
+Terms and Privacy:
+Terms of Service
+Terms of Service & Data Use
+Terms of Use
+Thank you! \u2764\uFE0F
+The agent was prevented from accessing some sites
+The agent will frequently ask for review.
+The agent will never request for review.
+The agent will wait for you to install the browser extension.
+The associated worktree will also be deleted.
+The language server has unexpectedly crashed.
+There was an unexpected issue setting up your account.
+Thinking
+Thinking...
+This plugin has been built by a verified reference publisher.
+This plugin has been built by the official publisher.
+This skill is installed in your workspace
+This workspace no longer exists. You cannot send messages.
+Title:
+To provide feedback
+To use browser tools, you need to enable remote debugging:
+Toggle Debug Mode
+Toggle Debug Sidebar
+Toggle Ephemeral Messages
+Toggle Incognito Mode
+Toggle Sidebar
+Tool arguments
+Tool Calls
+Tool Output
+Trajectory ID
+Trajectory Stats
+Transpilation Error:
+Transpiling React app...
+Try Again
+Unknown Notebook
+Use Google Cloud project instead
+Use regular expression (.*)
+User cancelled agent execution.
+User Implicit Trajectories
+Value
+View
+View could not be opened
+View customizations
+View Debug
+View Diff
+View documentation
+View Logs
+View MCP settings
+View network request
+View network requests
+View Page
+View plans
+Visible only
+Weekly
+What is missing in your workflow
+What quota or feature is being incorrectly limited
+Why are you opting out?
+Workflows
+Workspace
+Workspace API Tool:
+Your administrator has disabled MCP servers.
